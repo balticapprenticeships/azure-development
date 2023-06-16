@@ -8,9 +8,9 @@ try {
     #}else{
        # Write-Log "Installing Nvidia Drivers"
         Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=874181" -OutFile C:\NvidiaGRID-15-2.exe
-        Write-Output "Installing Nvidia Drivers"
+        Write-Output "Installing Nvidia Drivers"        
         $nvidiaArgs = @('/s')
-        Start-Process -FilePath "C:\buildArtifacts\windows-client\PBIDesktopSetup_x64.exe" -ArgumentList $nvidiaArgs -Wait
+        Start-Process -FilePath "C:\NvidiaGRID-15-2" -ArgumentList $nvidiaArgs -Wait
         #if($powerBiInstalled){
            # Write-Log "Microsoft Power BI Desktop installation succeded"
         #    Write-Output "Microsoft Power BI Desktop installation succeded"
