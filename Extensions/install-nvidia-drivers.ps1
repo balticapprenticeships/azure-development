@@ -1,28 +1,35 @@
-#region Power Bi Desktop
+#region Nvidia T4 Drivers
 try {
-    #$powerBi = "Microsoft Power BI Desktop"
-    #$powerBiInstalled = ((Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*) | Where-Object { $_.DisplayName -like "*$powerBi*" })
-    #if($powerBiInstalled){
-       # Write-Log "Microsoft Power BI Desktop is already install"
-        #Write-Output "Microsoft Power BI Desktop is already install"
-    #}else{
-       # Write-Log "Installing Nvidia Drivers"
+    # Check if Driver is already installed.
+    $nvidia = "NVIDIA Install Application"
+    $nvidiaInstalled = ((Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*) | Where-Object { $_.DisplayName -like "*$nvidia*" })
+    if($nvidiaInstalled){
+        Write-Output "Nvidia GRID T4 Drivers already install"
+    }else{
+        # Disable the remote call to ngx. Nvidia will remove this by default in 15.3
+        If (!(Test-Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global\NGXCore")) {
+            New-Item -Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global\NGXCore" -Force | Out-Null
+        }
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global\NGXCore" -Name "EnableOTA" -Type DWord -Value 0
+        # Create parent directory. might move this to buildAftifacts
         New-Item -Name "Nvidia_T4_Driver" -ItemType Directory -Force
+        # Download Nvidia driver v15.2
         Invoke-WebRequest -Uri "https://labresourcesclientsa.blob.core.windows.net/labconfig/Nvidia_T4_Driver/15-2.zip?sp=r&st=2023-06-16T13:17:38Z&se=2023-06-16T21:17:38Z&spr=https&sv=2022-11-02&sr=b&sig=ld7oxxZujLbQkhTUA8z4svE3GDWyiYIKQKs3mH3p94Q%3D" -OutFile C:\15-2.zip
+        # Extract driver to parent directory
+        Write-Output "Unzipping driver"
         Expand-Archive -Path "C:\15-2.zip" -DestinationPath "C:\Nvidia_T4_Driver\"
+        # Install driver
         Write-Output "Installing Nvidia Drivers"        
         $nvidiaArgs = @('/s')
         Start-Process -FilePath "C:\Nvidia_T4_Driver\15-2\setup.exe" -ArgumentList $nvidiaArgs -Wait
-        #if($powerBiInstalled){
-           # Write-Log "Microsoft Power BI Desktop installation succeded"
-        #    Write-Output "Microsoft Power BI Desktop installation succeded"
-        #}
-    #}
+        # Check if driver is installed
+        if($nvidiaInstalled){
+            Write-Output "Nvidia GRID T4 Drivers installation succeded"
+        }
+    }
 }
 catch [System.Exception] {
     Write-Warning $_.Exception.Message
-    #Write-Log "Error installing Microsoft Power BI Desktop: $ErrorMessage"
-    Write-Output "Error installing Nvidia Drivers: $ErrorMessage"
+    Write-Output "Error installing Nvidia GRID T4 Drivers: $ErrorMessage"
 }
-
 #endregion
