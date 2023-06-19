@@ -82,7 +82,8 @@
                 "SQLDataAnalysis",
                 "DataLevel4",
                 "DMCC3",
-                "DMCC4"
+                "DMCC4",
+                "SWAPC5"
 
             ],
             "metadata": {
@@ -187,6 +188,12 @@
                 "description": "Please provide the start date of the course on the following format 01/01/2022."
             }
         },
+        "courseEndDay": {
+            "type": "string",
+            "metadata": {
+                "description": "Please enter the day of the week that the course will end e.g., Tuesday."
+            }
+        },
         "startupSchedule": {
             "type": "string",
             "defaultValue": "No",
@@ -211,7 +218,7 @@
         }
     },
     "functions": [],
-    "variables": {
+    "variables": {        
         "vmNamePrefix": "[toUpper(concat(parameters('vmName'), parameters('deliveringTrainerInitials')))]",
         "patchMode": "[if(equals(parameters('osPlatform'), 'Windows'), 'AutomaticByOS', 'ImageDefault')]",
         "osDiskSku": "[if(contains(parameters('vmSize'), 'Standard_NC'), 'StandardSSD_LRS', 'Standard_LRS')]",
@@ -477,6 +484,9 @@
                     "courseStartDate": {
                         "value": "[parameters('courseStartDate')]"
                     },
+                    "courseEndDay": {
+                        "value": "[parameters('courseEndDay')]"
+                    },
                     "startupSchedule": {
                         "value": "[parameters('startupSchedule')]"
                     },
@@ -499,6 +509,7 @@
                 "Dept": "[resourceGroup().tags['Dept']]",
                 "CreatedBy": "[parameters('createdBy')]",
                 "CourseDate": "[concat('WC-', parameters('courseStartDate'))]",
+                "CourseEndDay": "[parameters('courseEndDay')]",
                 "Cleanup": "[parameters('resourceGroupCleanup')]"
             },
             "copy": {
