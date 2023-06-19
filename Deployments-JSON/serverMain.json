@@ -252,6 +252,12 @@
                 "description": "Please provide the start date of the course on the following format 01/01/2022."
             }
         },
+        "courseEndDay": {
+            "type": "string",
+            "metadata": {
+                "description": "Please enter the day of the week that the course will end e.g., Tuesday."
+            }
+        },
         "startupSchedule": {
             "type": "string",
             "defaultValue": "No",
@@ -548,6 +554,9 @@
                     "courseStartDate": {
                         "value": "[parameters('courseStartDate')]"
                     },
+                    "courseEndDay": {
+                        "value": "[parameters('courseEndDay')]"
+                    },
                     "startupSchedule": {
                         "value": "[parameters('startupSchedule')]"
                     },
@@ -642,6 +651,9 @@
                     "courseStartDate": {
                         "value": "[parameters('courseStartDate')]"
                     },
+                    "courseEndDay": {
+                        "value": "[parameters('courseEndDay')]"
+                    },
                     "startupSchedule": {
                         "value": "[parameters('startupSchedule')]"
                     },
@@ -664,6 +676,7 @@
                 "Dept": "[resourceGroup().tags['Dept']]",
                 "CreatedBy": "[parameters('createdBy')]",
                 "CourseDate": "[concat('WC-', parameters('courseStartDate'))]",
+                "CourseEndDay": "[parameters('courseEndDay')]",
                 "Cleanup": "[parameters('resourceGroupCleanup')]"
             },
             "copy": {
