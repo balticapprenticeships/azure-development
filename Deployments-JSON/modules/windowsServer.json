@@ -77,6 +77,9 @@
         "courseStartDate": {
             "type": "string"
         },
+        "courseEndDay": {
+            "type": "string"
+        },
         "startupSchedule": {
             "type": "string"
         },
@@ -86,6 +89,8 @@
     },
     "functions": [],
     "variables": {
+        "subscriptionId1": "[resourceGroup().subscriptionId]",
+        "subscriptionId": "42ae00f5-c447-4ade-bb2a-55b2a5d7480d",
         "vmNamePrefix": "[toUpper(concat(parameters('vmName'), parameters('deliveringTrainerInitials')))]",
         "acgRG": "BalticImageGalleryRg",
         "galleryImageName": "TrainingACG",
@@ -148,7 +153,7 @@
                 "vTpmEnabled": "[parameters('vTPM')]"
             }
         },
-        "vmImage": "[concat('/subscriptions/', parameters('subscription'), '/resourceGroups/', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, '/version/', parameters('imageVersion'))]",
+        "vmImage": "[concat('/subscriptions/', variables('subscriptionId'), '/resourceGroups', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, parameters('imageVersion'))]",
         "_dscArtifactsLocation": "https://raw.githubusercontent.com/balticapprenticeships/azuredeployment",
         "_dscExtensionRepo": "main/extensions",
         "dscArchiveFolder": "DSC",
@@ -167,6 +172,7 @@
                 "Dept": "[resourceGroup().tags['Dept']]",
                 "CreatedBy": "[parameters('createdBy')]",
                 "CourseDate": "[concat('WC-', parameters('courseStartDate'))]",
+                "CourseEndDay": "[parameters('courseEndDay')]",
                 "Schedule": "[if(equals(parameters('startupSchedule'), 'Yes'), 'StartDaily', 'NoSchedule')]",
                 "IdleShutdown": "[parameters('idleVm')]",
                 "Cleanup": "[parameters('resourceGroupCleanup')]"
@@ -190,7 +196,7 @@
                         "deleteOption": "[parameters('osDiskDeleteOption')]"
                     },
                     "imageReference": {
-                        "id": "[variables('vmImage')]"
+                        "id": "[concat('/subscriptions/', variables('subscriptionId'), '/resourceGroups', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, parameters('imageVersion'))]"
                     }
                 },
                 "networkProfile": {
@@ -237,6 +243,7 @@
                         "Dept": "[resourceGroup().tags['Dept']]",
                         "CreatedBy": "[parameters('createdBy')]",
                         "CourseDate": "[parameters('courseStartDate')]",
+                        "CourseEndDay": "[parameters('courseEndDay')]",
                         "Cleanup": "[parameters('resourceGroupCleanup')]"
                     },
                     "dependsOn": [

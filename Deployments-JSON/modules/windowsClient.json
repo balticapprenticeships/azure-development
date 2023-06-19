@@ -71,6 +71,9 @@
         "courseStartDate": {
             "type": "string"
         },
+        "courseEndDay": {
+            "type": "string"
+        },
         "startupSchedule": {
             "type": "string"
         },
@@ -80,7 +83,9 @@
     },
     "functions": [],
     "variables": {
+        "subscriptionId": "42ae00f5-c447-4ade-bb2a-55b2a5d7480d",
         "vmNamePrefix": "[toUpper(concat(parameters('vmName'), parameters('deliveringTrainerInitials')))]",
+        "acgRG": "BalticImageGalleryRg",
         "galleryImageName": "TrainingACG",
         "WindowsLicense": "Windows_Client",
         "operatingSystemValues": {
@@ -110,6 +115,9 @@
             },
             "DMCC4": {
                 "galleryImageDefinitionName": "BA-DMContentCreator"
+            },
+            "SWAPC5": {
+                "galleryImageDefinitionName": "BA-SWDCourse5"
             }
         },
         "labConfigDscFunction": "[concat('xBa', concat(parameters('course'), 'LabCfg'))]",
@@ -138,6 +146,7 @@
                 "Dept": "[resourceGroup().tags['Dept']]",
                 "CreatedBy": "[parameters('createdBy')]",
                 "CourseDate": "[concat('WC-', parameters('courseStartDate'))]",
+                "CourseEndDay": "[parameters('courseEndDay')]",
                 "Schedule": "[if(equals(parameters('startupSchedule'), 'Yes'), 'StartDaily', 'NoSchedule')]",
                 "IdleShutdown": "[parameters('idleVm')]",
                 "Cleanup": "[parameters('resourceGroupCleanup')]"
@@ -161,7 +170,7 @@
                         "deleteOption": "[parameters('osDiskDeleteOption')]"
                     },
                     "imageReference": {
-                        "id": "[resourceId('Microsoft.Compute/galleries/images/versions', variables('galleryImageName'), variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, parameters('imageVersion'))]"
+                        "id": "[concat('/subscriptions/', variables('subscriptionId'), '/resourceGroups', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, parameters('imageVersion'))]"
                     }
                 },
                 "networkProfile": {
@@ -207,6 +216,7 @@
                         "Dept": "[resourceGroup().tags['Dept']]",
                         "CreatedBy": "[parameters('createdBy')]",
                         "CourseDate": "[parameters('courseStartDate')]",
+                        "CourseEndDay": "[parameters('courseEndDay')]",
                         "Cleanup": "[parameters('resourceGroupCleanup')]"
                     },
                     "dependsOn": [
