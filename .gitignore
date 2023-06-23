@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *__queuestorage__
+_[Bb]ackup
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
