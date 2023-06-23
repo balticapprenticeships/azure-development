@@ -182,6 +182,12 @@
                 "description": "Please provide the first and last inital of the delivering trainer."
             }
         },
+        "routeway": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
         "courseStartDate": {
             "type": "string",
             "metadata": {
@@ -219,16 +225,36 @@
     },
     "functions": [],
     "variables": {
-        "subscriptionIdKv": "42ae00f5-c447-4ade-bb2a-55b2a5d7480d",
-        "subscriptionId": "[subscription().subscriptionId]", 
         "vmNamePrefix": "[toUpper(concat(parameters('vmName'), parameters('deliveringTrainerInitials')))]",
+        "rwkeyVault": {
+            "IT": {
+                "keyVaultRg": "ITRouteway",
+                "rwSuffix": "ITR"
+            },
+            "SoftwareDevelopment": {
+                "keyVaultRg": "SWDRouteway",
+                "rwSuffix": "SWD"
+            },
+            "DigitalMarketing": {
+                "keyVaultRg": "DMRouteway",
+                "rwSuffix": "DM"
+            },            
+            "Data": {
+                "keyVaultRg": "DataRouteway",
+                "rwSuffix": "Data"
+            },
+            "InternalDev": {
+                "keyVaultRg": "IntDev",
+                "rwSuffix": "IntDev"
+            }
+        },
         "patchMode": "[if(equals(parameters('osPlatform'), 'Windows'), 'AutomaticByOS', 'ImageDefault')]",
         "osDiskSku": "[if(contains(parameters('vmSize'), 'Standard_NC'), 'StandardSSD_LRS', 'Standard_LRS')]",
         "securityType": "Standard",
         "licenseType": "AzureLicense",
         "idleVM": "No",
-        "vaultResourceGroup": "BalticTrainingOMSRg",
-        "vaultName": "VMDeployment",
+        "vaultResourceGroup": "[concat(variables('rwkeyVault')[parameters('routeway')].keyVaultRg, 'OMSRg')]",
+        "vaultName": "[concat('VMDeployment', variables('rwkeyVault')[parameters('routeway')].rwSuffix)]",
         "_artifactsLocation": "https://raw.githubusercontent.com/balticapprenticeships/azure-development",
         "_moduleRepo": "/main/Deployments-JSON/modules"       
     },
@@ -400,6 +426,14 @@
                     "location": {
                         "value": "[parameters('location')]"
                     },
+                    "subscriptionId": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+                            },
+                            "secretName": "SubscriptionId"
+                        }
+                    },
                     "vmName": {
                         "value": "[parameters('vmName')]"
                     },
@@ -448,7 +482,7 @@
                     "adminUsername": {
                         "reference": {
                             "keyVault": {
-                                "id": "[resourceId(variables('subscriptionIdKv'), variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+                                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
                             },
                             "secretName": "LabAdmin"
                         }
@@ -456,7 +490,7 @@
                     "adminPassword": {
                         "reference": {
                             "keyVault": {
-                                "id": "[resourceId(variables('subscriptionIdKv'), variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+                                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
                             },
                             "secretName": "LabAdminPassword"
                         }
@@ -464,7 +498,7 @@
                     "localUsername": {
                         "reference": {
                             "keyVault": {
-                                "id": "[resourceId(variables('subscriptionIdKv'), variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+                                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
                             },
                             "secretName": "LabUser"
                         }
@@ -472,7 +506,7 @@
                     "localUserPassword": {
                         "reference": {
                             "keyVault": {
-                                "id": "[resourceId(variables('subscriptionIdKv'), variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+                                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
                             },
                             "secretName": "LabUserPassword"
                         }

@@ -5,6 +5,9 @@
         "location": {
             "type": "string"
         },
+        "subscriptionId": {
+            "type": "string"
+        },
         "vmName": {
             "type": "string"
         },
@@ -83,7 +86,6 @@
     },
     "functions": [],
     "variables": {
-        "subscriptionId": "42ae00f5-c447-4ade-bb2a-55b2a5d7480d",
         "vmNamePrefix": "[toUpper(concat(parameters('vmName'), parameters('deliveringTrainerInitials')))]",
         "acgRG": "BalticImageGalleryRg",
         "galleryImageName": "TrainingACG",
@@ -170,7 +172,7 @@
                         "deleteOption": "[parameters('osDiskDeleteOption')]"
                     },
                     "imageReference": {
-                        "id": "[concat('/subscriptions/', variables('subscriptionId'), '/resourceGroups/', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, '/versions/', parameters('imageVersion'))]"
+                        "id": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', variables('acgRG'), '/providers/Microsoft.Compute/galleries/', variables('galleryImageName'), '/images/', variables('operatingSystemValues')[parameters('course')].galleryImageDefinitionName, '/versions/', parameters('imageVersion'))]"
                     }
                 },
                 "networkProfile": {
